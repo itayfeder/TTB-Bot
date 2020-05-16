@@ -2,7 +2,7 @@ module.exports = {
 	name: 'suggest',
 	aliases: [ "suggest" ],
 	description: "Suggest a suggestion to a dedicated channel.",
-	usage: process.env.PREFIX + "suggest <your suggestion>",
+  usage: process.env.PREFIX + "suggest <your suggestion>",
 	execute(discord, message, args) {
 		const channel = message.guild.channels.cache.find(ch => ch.name === 'suggestions');
 		const suggestion = args.filter(e => e !== 'suggest').join(" ");
@@ -14,8 +14,8 @@ module.exports = {
 		  .setTimestamp()
 		  .setFooter('State: Unknown');
 		channel.send(embed).then(embedMessage => {
-		  embedMessage.react("??");
-		  embedMessage.react("??");
+		  embedMessage.react("👍");
+		  embedMessage.react("👎");
 		});
 		message.delete();
 	},
