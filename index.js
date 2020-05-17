@@ -13,9 +13,15 @@ setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
 }, 280000);
 
+
+
+
+
+
 const Discord = require('discord.js');
 const bot = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 const PREFIX = process.env.PREFIX;
+const config = require("./config");
 
 const fs = require('fs');
 bot.commands = new Discord.Collection();
@@ -27,10 +33,8 @@ for(const file of commandFiles){
     bot.commands.set(command.name, command);
 }
 
-
-
 bot.on("ready", message => {
-  bot.user.setActivity("my code", { type: "WATCHING"})
+  bot.user.setActivity("TTB: Reborn!!!", { type: "PLAYING"})
   console.log("This bot is online!");
 });
 
@@ -38,13 +42,13 @@ bot.on("message", message => {
   let args = message.content.substring(PREFIX.length).split(" ");
 
   if (message.author.bot) return;
-  if (message.content.startsWith("fsb!")) {
+  if (message.content.startsWith(PREFIX)) {
 	  if (bot.commands.get('help').aliases.includes(args[0])) bot.commands.get('help').execute(Discord, message, args, bot.commands);
 	  else if (bot.commands.get('ping').aliases.includes(args[0])) bot.commands.get('ping').execute(Discord, message, args);
 	  else if (bot.commands.get('suggest').aliases.includes(args[0])) bot.commands.get('suggest').execute(Discord, message, args);
 	  else if (bot.commands.get('wiki').aliases.includes(args[0])) bot.commands.get('wiki').execute(Discord, message, args);
 	  else if (bot.commands.get('clear').aliases.includes(args[0])) {
-		  if (message.member.roles.cache.has('711118845657612418')) {
+		  if (message.member.roles.cache.has(config.AdminRoleID)) {
 			  bot.commands.get('clear').execute(Discord, message, args);
 		  }
 		  else {
@@ -53,7 +57,7 @@ bot.on("message", message => {
 		  }
 	  }
 	  else {
-		  message.channel.send("I don't recognize this command. Try again (or type fsb!help to get help)!").then(m => m.delete(5000));
+		  message.channel.send("I don't recognize this command. Try again (or type " + PREFIX + "help to get help)!").then(m => m.delete(5000));
 	  }
   }
   else {
@@ -71,40 +75,25 @@ bot.on("messageReactionAdd", async (reaction, user) => {
 		}
 	}
   
-  if (reaction.message.channel === reaction.message.guild.channels.cache.find(ch => ch.name === 'suggestions')) {
-    if (reaction.message.guild.member(user).roles.cache.has('711118845657612418')) {
+  if (reaction.message.channel === reaction.message.guild.channels.cache.find(ch => ch.name === config.SuggestionsChannel)) {
+    if (reaction.message.guild.member(user).roles.cache.has(config.AdminRoleID)) {
       const NewEmbed = new Discord.MessageEmbed()
         .setAuthor(reaction.message.embeds[0].author.name, reaction.message.embeds[0].author.iconURL)
         .setTitle(reaction.message.embeds[0].title)
         .addField(reaction.message.embeds[0].fields[0].name, reaction.message.embeds[0].fields[0].value)
         .setTimestamp()
-      switch(reaction.emoji.toString()) {
-        
-        case ("🟢") :
-          NewEmbed.setColor("2ECC71");
-          NewEmbed.setFooter('State: Approved!');
-          reaction.message.channel.send(NewEmbed);
-          reaction.message.delete();
-        break;
-        case ("🔴") :
-          NewEmbed.setColor("C0392B");
-          NewEmbed.setFooter('State: Denied!');
-          reaction.message.channel.send(NewEmbed);
-          reaction.message.delete();
-        break;
-        case ("🔸") :
-          NewEmbed.setColor("FFCA70");
-          NewEmbed.setFooter('State: Undecided (yet)!');
-          reaction.message.channel.send(NewEmbed);
-          reaction.message.delete();
-        break;
-        case ("🔳") :
-          NewEmbed.setColor("CACFD2");
-          NewEmbed.setFooter('State: Invalid!');
-          reaction.message.channel.send(NewEmbed);
-          reaction.message.delete();
-        break;
-          
+
+      let EmojiList = [];
+      for(let i = 0; i < config.SuggestionEmotes.length; i++) {
+        EmojiList.push(config.SuggestionEmotes[i].Emoji);
+      }
+      
+      if (EmojiList.includes(reaction.emoji.toString())) {
+        const FoundEmoji = config.SuggestionEmotes.find(e => e.Emoji === reaction.emoji.toString());
+        NewEmbed.setColor(FoundEmoji.Color);
+        NewEmbed.setFooter('State: ' + FoundEmoji.StateText + '!');
+        reaction.message.channel.send(NewEmbed);
+        reaction.message.delete();
       }
     }
   }
