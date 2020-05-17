@@ -1,0 +1,32 @@
+{
+  "AdminRoleID": "711296480639582228",
+  
+  "SuggestionsChannel": "☝ideas",
+  "SuggestionEmotes" : [
+    {
+      "Emoji": "🟢",
+      "Color": "2ECC71",
+      "StateText": "Approved"
+    },
+    {
+      "Emoji": "🔴",
+      "Color": "C0392B",
+      "StateText": "Denied"
+    },
+    {
+      "Emoji": "🔸",
+      "Color": "FFCA70",
+      "StateText": "Undecided (yet)"
+    },
+    {
+      "Emoji": "🔳",
+      "Color": "CACFD2",
+      "StateText": "Invalid"
+    },
+    {
+      "Emoji": "👏",
+      "Color": "FDD2ED",
+      "StateText": "Meme"
+    }
+  ]
+}

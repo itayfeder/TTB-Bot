@@ -1,3 +1,5 @@
+const config = require("./../config");
+
 module.exports = {
 	name: 'help',
 	aliases: [ "help", "h" ],
@@ -13,7 +15,7 @@ module.exports = {
     if (args[1] == null) {
       for (let i = 0; i < commands.array().length; i++) {
         if (commands.array()[i].isAdmin == true) {
-          if (message.member.roles.cache.has('711118845657612418')) {
+          if (message.member.roles.cache.has(config.AdminRoleID)) {
             embed.addField(commands.array()[i].name + " (Aliases: " + commands.array()[i].aliases.join(", ") + "):", commands.array()[i].description, true);
             embed.addField("Usage:", commands.array()[i].usage, true);
             embed.addField('\u200B', '\u200B');
